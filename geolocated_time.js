@@ -222,10 +222,10 @@ function setCenter(latLng){
 				  'visible'
 				  );
 				  map.setFilter(layer,["==","GEOID",geoid])
-				  map.setPaintProperty(layer, 'line-color', layerColors[mtfccId]);			  //
-				  map.setPaintProperty(layer, 'line-width', 3);			  //
-				  map.setPaintProperty(layer, 'line-opacity', .5);			  //
-				  // map.setPaintProperty(layer, 'fill-outline-color', layerColors[mtfccId]);
+				  // map.setPaintProperty(layer, 'line-color', layerColors[mtfccId]);			  //
+  // 				  map.setPaintProperty(layer, 'line-width', 3);			  //
+  // 				  map.setPaintProperty(layer, 'line-opacity', .5);			  //
+  //  // map.setPaintProperty(layer, 'fill-outline-color', layerColors[mtfccId]);
 				  // map.setPaintProperty(layer, 'fill-opacity', .2);
 			  }
 			 
@@ -331,7 +331,8 @@ function drawMap(){
     mapboxgl.accessToken = "pk.eyJ1Ijoiamlhei11c2FmYWN0cyIsImEiOiJjbDNrOXUxNmoxamNmM2ltcmdhemQwNWJiIn0.QVFg3eeO5XBtNc5WRDHEYg"
     map = new mapboxgl.Map({
 		container: 'map',
-		style:"mapbox://styles/jiaz-usafacts/cl65eu5qq000h15oajkphueac?fresh=true",// ,//newest
+		//style:"mapbox://styles/jiaz-usafacts/cl65eu5qq000h15oajkphueac?fresh=true",// ,//newest
+		style: "mapbox://styles/jiaz-usafacts/cl6e3gmlc000315npkvm6z7f7",
 		zoom: 10,
 		preserveDrawingBuffer: true,
 		minZoom:3.5,
