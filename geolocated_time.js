@@ -158,6 +158,7 @@ var marker = new mapboxgl.Marker({
 		})
 		
 var dp03Columns = {
+	DP03_0001E:"population over 16",
 DP03_0005PE :"Unemployed",
 DP03_0052PE: "Less than $10,000",
 DP03_0061PE: "$200,000 or more",
@@ -253,6 +254,8 @@ function drawChart(data){
 		
 		if(columnName=="DP03_0062E"){
 			var yScale = d3.scaleLinear().domain([0,100000]).range([h-p*2,0])
+		}else if(columnName=="DP03_0001E"){
+			var yScale = d3.scaleLinear().domain([0,1000000]).range([h-p*2,0])
 		}else{
 			var yScale = d3.scaleLinear().domain([0,30]).range([h-p*2,0])
 		}
