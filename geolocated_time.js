@@ -251,7 +251,7 @@ function drawChart(data){
 	d3.selectAll("#"+columnName+"_chartDiv").remove()
 		
 		if(columnName=="DP03_0062E"){
-			var yScale = d3.scaleLinear().domain([0,150000]).range([h-p*2,0])
+			var yScale = d3.scaleLinear().domain([0,100000]).range([h-p*2,0])
 		}else{
 			var yScale = d3.scaleLinear().domain([0,20]).range([h-p*2,0])
 		}
