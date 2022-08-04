@@ -256,7 +256,7 @@ function drawChart(data){
 			var yScale = d3.scaleLinear().domain([0,20]).range([h-p*2,0])
 		}
 		
-		var xAxis = d3.axisBottom().scale(xScale).ticks(4)
+		var xAxis = d3.axisBottom().scale(xScale).ticks(10)
 		var yAxis = d3.axisLeft().scale(yScale).ticks(4)
 		
 		
