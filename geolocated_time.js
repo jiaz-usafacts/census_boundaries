@@ -331,7 +331,7 @@ function drawMap(){
     mapboxgl.accessToken = "pk.eyJ1Ijoiamlhei11c2FmYWN0cyIsImEiOiJjbDNrOXUxNmoxamNmM2ltcmdhemQwNWJiIn0.QVFg3eeO5XBtNc5WRDHEYg"
     map = new mapboxgl.Map({
 		container: 'map',
-		style:"mapbox://styles/jiaz-usafacts/cl65eu5qq000h15oajkphueac",// ,//newest
+		style:"mapbox://styles/jiaz-usafacts/cl65eu5qq000h15oajkphueac?fresh=true",// ,//newest
 		zoom: 10,
 		preserveDrawingBuffer: true,
 		minZoom:3.5,
