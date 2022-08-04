@@ -236,7 +236,7 @@ function setCenter(latLng){
 function drawChart(data){
 	//d3.select("#chart svg").remove()
 	var h = 200
-	var w = 400
+	var w = 600
 	var p = 50
 	var keys = Object.keys(data[Object.keys(data)[0]])
 	
@@ -312,8 +312,6 @@ function drawChart(data){
 				.attr("fill",color)
 				.attr("transform","translate("+p+","+p+")")
 		}
-		
-
 	}
 	//var svg = d3.select("#chart").append("svg").attr("height",h).attr("width",w+20)
 	
