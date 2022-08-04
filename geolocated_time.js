@@ -161,7 +161,8 @@ var dp03Columns = {
 DP03_0005PE :"Unemployed",
 DP03_0052PE: "Less than $10,000",
 DP03_0061PE: "$200,000 or more",
-DP03_0062E: "Median household income"
+DP03_0062E: "Median household income",
+	DP03_0028PE:"service occupations"
 }
 		
 function setCenter(latLng){
@@ -253,7 +254,7 @@ function drawChart(data){
 		if(columnName=="DP03_0062E"){
 			var yScale = d3.scaleLinear().domain([0,100000]).range([h-p*2,0])
 		}else{
-			var yScale = d3.scaleLinear().domain([0,20]).range([h-p*2,0])
+			var yScale = d3.scaleLinear().domain([0,30]).range([h-p*2,0])
 		}
 		
 		var xAxis = d3.axisBottom().scale(xScale).ticks(10)
