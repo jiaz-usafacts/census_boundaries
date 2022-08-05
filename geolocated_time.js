@@ -247,7 +247,7 @@ function setCenter(latLng){
 				  console.log(f)
 				  map.setFilter(layer,["==","GEOID",geoid])
 				  //map.setPaintProperty(layer,"line-offset",parseInt(f)*20)
-				  map.setPaintProperty(layer,"line-translate",[parseInt(f),parseInt(f)])
+				 // map.setPaintProperty(layer,"line-translate",[parseInt(f),parseInt(f)])
 				  // map.setPaintProperty(layer, 'line-color', layerColors[mtfccId]);			  //
   // 				  map.setPaintProperty(layer, 'line-width', 3);			  //
   // 				  map.setPaintProperty(layer, 'line-opacity', .5);			  //
@@ -261,11 +261,91 @@ function setCenter(latLng){
 	  drawChart(chartData)
 	  d3.select("#info").html(displayString)
 }
-function drawChangeSmallMultiple(data,key){
-	d3.select("#chart").append("div").html("% change "+dp03Columns[key])//+" "+mtfccsFileNames[d])
+function  drawSmallMultiple(data,key){
+	d3.select("#group_"+key).append("div").html(dp03Columns[key])//+" "+mtfccsFileNames[d])
+	.style("font-size","24px")
+	.style("padding-top","10px")
+		.attr("class", "chart")
 	
 	var popKey = key
-	var w = 120
+	
+	var w = 200
+	var h = 100
+	var p = 20
+	var xScale = d3.scaleLinear().domain([2010,2020]).range([0,w-p*4])
+
+
+	 if(key=="DP03_0062E"){
+		var yScale = d3.scaleLinear().domain([0,100000]).range([h-p*2,0])
+	}else if(key=="DP03_0001E"){
+		var yScale = d3.scaleLinear().domain([0,500000]).range([h-p*2,0])
+	}else{
+		var yScale = d3.scaleLinear().domain([0,30]).range([h-p*2,0])
+	}
+			//var yScale = d3.scaleLinear().domain([0,30]).range([h-p*2,0])
+	
+		var xAxis = d3.axisBottom().scale(xScale).ticks(2)
+		var yAxis = d3.axisLeft().scale(yScale).ticks(2)
+			
+	for(var d in data){
+		var color = layerColors[d]
+		var chartData = data[d][popKey]
+		var chartDiv = d3.select("#group_"+key).append("div").style("display","inline-block").style("width",w+"px")
+		.attr("class", "chart")
+		
+		chartDiv.append("div").html(mtfccsFileNames[d])
+		
+		var svg = chartDiv.append("svg").attr("height",h).attr("width",w)
+		.attr("id", popKey+"_"+d+"_value")
+				
+				svg.append("g").call(xAxis)
+			.attr("transform","translate("+p*3+","+(h-p)+")")
+		
+				svg.append("g").call(yAxis)
+			.attr("transform","translate("+p*3+","+p+")")
+		
+		
+	d3.select("#"+popKey+"_"+d+"_value")
+	.append("path")
+	.datum(Object.keys(chartData))
+  	.attr("stroke", color)
+	.attr("stroke-width",2)
+	.attr("opacity",.5)
+   .attr("fill", "none")
+			.attr("transform","translate("+p*3+","+p+")")
+		
+	.attr("d",d3.line()
+		.x(function(d){			
+			return xScale(d)})
+		.y(function(d){
+			var previousYear = d-1
+			var previousValue = parseInt(chartData[previousYear])
+			var currentValue = parseInt(chartData[d])
+			var percentChange = (previousValue-currentValue)/currentValue*100
+			if(isNaN(percentChange)==true){
+				//console.log(previousYear,previousValue,currentValue,percentChange,yScale(currentValue))
+				return yScale(currentValue)
+			}else{
+				return yScale(currentValue)
+			}
+		
+		})
+	)				
+	//.attr("transform","translate("+p+","+p+")")
+	}
+}
+
+
+function drawChangeSmallMultiple(data,key){
+	d3.select("#group_"+key).append("div").html("% change "+dp03Columns[key])
+	.style("font-size","24px")
+	.style("padding-top","10px")
+		.attr("class", "chart")
+	.style("border-top","1px solid black")
+		.attr("class", "chart")
+	
+	var popKey = key
+	var w = 200
 	var h = 100
 	var p = 20
 	var xScale = d3.scaleLinear().domain([2010,2020]).range([0,w-p*2])
@@ -277,8 +357,8 @@ function drawChangeSmallMultiple(data,key){
 	for(var d in data){
 		var color = layerColors[d]
 		var chartData = data[d][popKey]
-		var chartDiv = d3.select("#chart").append("div").style("display","inline-block").style("width",w+"px")
-		//.attr("id", popKey+"_"+d)
+		var chartDiv = d3.select("#group_"+key).append("div").style("display","inline-block").style("width",w+"px")
+		.attr("class", "chart")
 		
 		chartDiv.append("div").html(mtfccsFileNames[d])
 		
@@ -331,6 +411,7 @@ function drawChart(data){
 	var keys = Object.keys(data[Object.keys(data)[0]])
 	//drawChangeSmallMultiple(data,"DP03_0001E")
 	//	drawChangeSmallMultiple(data,"DP03_0062E")
+		d3.selectAll(".chart").remove()
 	
 	var xScale = d3.scaleLinear().domain([2010,2020]).range([0,w-p*2])
 	
@@ -341,72 +422,13 @@ function drawChart(data){
 		var columnName = columns[c]
 		
 		
-	d3.selectAll("#"+columnName+"_chartDiv").remove()
+		d3.select("#chart").append("div").attr("id","group_"+columnName)
+		.style("margin-top","20px")
+		.style("padding","10px")
+		.style("border","1px solid black")
+	//	.html(columnName)
 		
-		if(columnName=="DP03_0062E"){
-			var yScale = d3.scaleLinear().domain([0,100000]).range([h-p*2,0])
-		}else if(columnName=="DP03_0001E"){
-			var yScale = d3.scaleLinear().domain([0,1000000]).range([h-p*2,0])
-		}else{
-			var yScale = d3.scaleLinear().domain([0,30]).range([h-p*2,0])
-		}
-		
-		var xAxis = d3.axisBottom().scale(xScale).ticks(10)
-		var yAxis = d3.axisLeft().scale(yScale).ticks(4)
-		
-		
-		var chartDiv = d3.select("#chart").append("div")
-		.attr("id",columnName+"_chartDiv")
-		chartDiv.append("div").html(dp03Columns[columns[c]])
-		
-		var svg = chartDiv.append("svg").attr("height",h).attr("width",w+20)
-			.attr("id",columnName)
-
-		var geos = Object.keys(data)
-		for(var g in geos){
-			var geo = geos[g]
-			var color = layerColors[geo]
-			
-			var chartData = data[geo][columnName]
-			if(g ==0){
-
-			d3.select("#"+columnName).append("g").call(xAxis)
-			.attr("transform","translate("+p+","+(h-p)+")")
-				
-
-			d3.select("#"+columnName).append("g").call(yAxis)
-			.attr("transform","translate("+p+","+(p)+")")
-			}
-			
-			d3.select("#"+columnName)
-			.append("path")
-			.datum(Object.keys(chartData))
-      	  	.attr("stroke", color)
-			.attr("stroke-width",2)
-			.attr("opacity",.5)
-     	   .attr("fill", "none")
-			.attr("d",d3.line()
-						.x(function(d){return xScale(d)})
-						.y(function(d){return yScale(chartData[d])})
-			)				
-			.attr("transform","translate("+p+","+p+")")
-			
-			
-			d3.select("#"+columnName)
-			.selectAll(".dot")
-				.data(Object.keys(chartData))
-				.enter()
-				.append("circle")
-				.attr("cx",function(d){
-					return xScale(d)})
-				.attr("cy",function(d){
-					//console.log(d)
-					return yScale(chartData[d])
-				})
-				.attr("r",2)
-				.attr("fill",color)
-				.attr("transform","translate("+p+","+p+")")
-		}
+		drawSmallMultiple(data,columnName)
 		drawChangeSmallMultiple(data,columnName)
 	}
 	//var svg = d3.select("#chart").append("svg").attr("height",h).attr("width",w+20)
