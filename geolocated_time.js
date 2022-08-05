@@ -426,6 +426,8 @@ function drawChart(data){
 		.style("margin-top","20px")
 		.style("padding","10px")
 		.style("border","1px solid black")
+		.attr("class", "chart")
+		
 	//	.html(columnName)
 		
 		drawSmallMultiple(data,columnName)
