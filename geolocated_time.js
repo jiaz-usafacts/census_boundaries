@@ -27,6 +27,29 @@ G4020: "#E5BD3F",//
 // X0072:'red',
 // X0001:"magenta", X0014:"green", X0005:"gold", X0029:"gold"
 		}
+	//
+//
+// csa - 00347b
+// cd - 249edc
+// senate upper - e62790
+// senate lower - 00906e
+// places - 871d6c
+// county - a56eff
+// elementary school - 6929c4
+// secondary - 20659d
+// unified - cf77ad
+
+
+		var mtfccsFileNames = {
+			"G5200":"congress",
+			"G4040":"county_subdivisions",
+			"G4110":"places",
+			"G5420":"school_unified",
+			"G5220":"legislative_lower",
+			"G4020":"county",
+			"G5400":"school_elementary",
+			"G5210":"legislative_upper",
+			"G5410":"school_secondary"}
 
 var promises = []
 		var keys = []
@@ -221,7 +244,10 @@ function setCenter(latLng){
 				  'visibility',
 				  'visible'
 				  );
+				  console.log(f)
 				  map.setFilter(layer,["==","GEOID",geoid])
+				  //map.setPaintProperty(layer,"line-offset",parseInt(f)*20)
+				  map.setPaintProperty(layer,"line-translate",[parseInt(f),parseInt(f)])
 				  // map.setPaintProperty(layer, 'line-color', layerColors[mtfccId]);			  //
   // 				  map.setPaintProperty(layer, 'line-width', 3);			  //
   // 				  map.setPaintProperty(layer, 'line-opacity', .5);			  //
@@ -235,13 +261,76 @@ function setCenter(latLng){
 	  drawChart(chartData)
 	  d3.select("#info").html(displayString)
 }
+function drawChangeSmallMultiple(data,key){
+	d3.select("#chart").append("div").html("% change "+dp03Columns[key])//+" "+mtfccsFileNames[d])
+	
+	var popKey = key
+	var w = 120
+	var h = 100
+	var p = 20
+	var xScale = d3.scaleLinear().domain([2010,2020]).range([0,w-p*2])
+			var yScale = d3.scaleLinear().domain([-30,30]).range([h-p*2,0])
+	
+		var xAxis = d3.axisBottom().scale(xScale).ticks(2)
+		var yAxis = d3.axisLeft().scale(yScale).ticks(4)
+			
+	for(var d in data){
+		var color = layerColors[d]
+		var chartData = data[d][popKey]
+		var chartDiv = d3.select("#chart").append("div").style("display","inline-block").style("width",w+"px")
+		//.attr("id", popKey+"_"+d)
+		
+		chartDiv.append("div").html(mtfccsFileNames[d])
+		
+		var svg = chartDiv.append("svg").attr("height",h).attr("width",w)
+		.attr("id", popKey+"_"+d)
+				
+				svg.append("g").call(xAxis)
+			.attr("transform","translate("+p+","+(h-p)+")")
+		
+				svg.append("g").call(yAxis)
+			.attr("transform","translate("+p+","+p+")")
+		
+		
+	d3.select("#"+popKey+"_"+d)
+	.append("path")
+	.datum(Object.keys(chartData))
+  	.attr("stroke", color)
+	.attr("stroke-width",2)
+	.attr("opacity",.5)
+   .attr("fill", "none")
+			.attr("transform","translate("+p+","+p+")")
+		
+	.attr("d",d3.line()
+		.x(function(d){			
+			return xScale(d)})
+		.y(function(d){
+			var previousYear = d-1
+			var previousValue = parseInt(chartData[previousYear])
+			var currentValue = parseInt(chartData[d])
+			var percentChange = (previousValue-currentValue)/currentValue*100
+			if(isNaN(percentChange)==true){
+				//console.log(previousYear,previousValue,currentValue,percentChange,yScale(currentValue))
+				return yScale(0)
+			}else{
+				return yScale(percentChange)
+			}
+		
+		})
+	)				
+	//.attr("transform","translate("+p+","+p+")")
+	}
+}
+
+
 function drawChart(data){
 	//d3.select("#chart svg").remove()
 	var h = 200
 	var w = 600
 	var p = 50
 	var keys = Object.keys(data[Object.keys(data)[0]])
-	
+	//drawChangeSmallMultiple(data,"DP03_0001E")
+	//	drawChangeSmallMultiple(data,"DP03_0062E")
 	
 	var xScale = d3.scaleLinear().domain([2010,2020]).range([0,w-p*2])
 	
@@ -250,6 +339,8 @@ function drawChart(data){
 		//console.log(c)
 		
 		var columnName = columns[c]
+		
+		
 	d3.selectAll("#"+columnName+"_chartDiv").remove()
 		
 		if(columnName=="DP03_0062E"){
@@ -316,6 +407,7 @@ function drawChart(data){
 				.attr("fill",color)
 				.attr("transform","translate("+p+","+p+")")
 		}
+		drawChangeSmallMultiple(data,columnName)
 	}
 	//var svg = d3.select("#chart").append("svg").attr("height",h).attr("width",w+20)
 	
@@ -338,6 +430,8 @@ function drawMap(){
 		minZoom:3.5,
 		maxZoom:15,// ,
 		 // maxBounds: maxBounds,
+        //pitch: 30, // pitch in degrees
+        // bearing: -60, // bearing in degrees
 		center: userCenter 
      });	
 
