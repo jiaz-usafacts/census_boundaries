@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	  <meta charset="UTF-8">
+    <title>dots</title>
+
+    <meta charset="UTF-8">
+   <script src="js/jquery.js"></script>
+   <!-- <script src="https://api.ipify.org?format=jsonp&callback=getIP"></script>
+  -->  
+        <!-- <script src="js/jquery.serialize-object.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  
+    <!-- <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"> -->
+  <script src='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.js'></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css" rel="stylesheet">  
+  <link href='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css' rel='stylesheet' />
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
+ 
+<!-- Promise polyfill script is required -->
+<!-- to use Mapbox GL Geocoder in IE 11. -->
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+
+<!--<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@700&family=Raleway:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@700&family=Coda+Caption:wght@800&family=Hammersmith+One&display=swap" rel="stylesheet"> -->
+
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+<!--
+  <script type="text/javascript" src="js/mapbox-gl.js"></script>
+-->
+<!-- <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+        crossorigin="anonymous">
+</script> -->
+<!--<script src="js/jquery.mousefollow.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet"> -->
+    <style>
+		body{
+			font-size:14px;
+			font-family: 'Helvetica', sans-serif;
+/*			font-family: 'Quicksand', sans-serif;
+*/		}
+	
+		#info{
+			position:absolute;
+			left:0px;
+			top:0px;
+			padding:10px;
+			margin:10px;
+			background-color:rgba(0,0,0,.5);
+			font-size:14px;
+			color:#fff;
+			width:300px;
+			border:1px solid white;
+		}
+		#userLocation{
+			position:fixed;
+			left:0px;
+			top:0px;
+			z-index:2;
+		}
+		#map{
+			position:fixed;
+			left:0px;
+			top:0px;
+			height:100%;
+			width:100vw;
+		}
+		.layerKey{
+			color:white;
+			padding:5px;
+			margin:2px;
+			display:inline-block;
+			cursor:pointer;
+		}
+    </style>
+
+</head>
+
+<body>
+
+<div id="map"></div>
+
+<div id="info"></div>
+	<!-- <div id="userLocation">user</div> -->
+	
+	
+	<!-- <div id="geocoder"></div> -->
+	
+ <!-- <div id="popup">test</div> -->
+  
+<!-- <div id="showAll">HIDE<br>ALL</div> -->
+
+
+<script type="text/javascript" src="js/d3.js"></script>
+<script type="text/javascript" src="js/queue.v1.min.js"></script>
+<script type="text/javascript" src="geoids_count.js"></script>
+<script type="text/javascript" src="grid.js"></script>
+
+
+</body>
+</html>

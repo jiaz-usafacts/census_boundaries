@@ -249,7 +249,7 @@ function setCenter(latLng){
 				  //map.setPaintProperty(layer,"line-offset",parseInt(f)*20)
 				 // map.setPaintProperty(layer,"line-translate",[parseInt(f),parseInt(f)])
 				  // map.setPaintProperty(layer, 'line-color', layerColors[mtfccId]);			  //
-  // 				  map.setPaintProperty(layer, 'line-width', 3);			  //
+   				  map.setPaintProperty(layer, 'line-width', 6-parseInt(f));			  //
   // 				  map.setPaintProperty(layer, 'line-opacity', .5);			  //
   //  // map.setPaintProperty(layer, 'fill-outline-color', layerColors[mtfccId]);
 				  // map.setPaintProperty(layer, 'fill-opacity', .2);
