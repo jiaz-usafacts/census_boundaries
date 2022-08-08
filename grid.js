@@ -83,20 +83,28 @@ for(var l in mtfccsFile){
 Promise.all([d3.json("merged_grid_coordinates.geojson"),d3.json("DP03_2020.json"),d3.json("combined_grid_layers.json")])
  .then(function(data){
 	// console.log(geoids_count)
-	 console.log(data[1])
+	 //console.log(data[1])
 	 map = drawMap()
 	 
+	 //console.log(data[0])
 	 var combinedData = combineDataWithGeo(data[0],data[1],data[2])
 	 
 	 map.on("load",function(){
-		 console.log(map.getStyle().layers)
+		// console.log(map.getStyle().layers)
 		 addLayers(combinedData,"test","#fff",0)
 		 	 	
 	 })
 })
+
+// #DP03_0005PE Percent!!EMPLOYMENT STATUS!!Population 16 years and over!!In labor force!!Civilian labor force!!Unemployed
+// #DP03_0052PE Percent!!INCOME AND BENEFITS (IN 2020 INFLATION-ADJUSTED DOLLARS)!!Total households!!Less than $10,000
+// #DP03_0061PE Percent!!INCOME AND BENEFITS (IN 2020 INFLATION-ADJUSTED DOLLARS)!!Total households!!$200,000 or more
+// #DP03_0062E Estimate!!INCOME AND BENEFITS (IN 2020 INFLATION-ADJUSTED DOLLARS)!!Total households!!Median household income (dollars)
+// #DP03_0099PE Percent!!HEALTH INSURANCE COVERAGE!!Civilian noninstitutionalized population!!No health insurance coverage
+
 function combineDataWithGeo(geoData,censusData,gridIds){
-	console.log(gridIds)
-	console.log(censusData)
+	// console.log(gridIds)
+	// console.log(censusData)
 	for(var i in geoData.features){
 		//console.log(geoData.features[i])
 		var gridId = geoData.features[i].properties.id
@@ -126,6 +134,8 @@ function combineDataWithGeo(geoData,censusData,gridIds){
 }
 
 function addLayers(layerData,layerName,color,offset){
+	var min = 5000
+	var max = 100000
 	//var positionsActive =Object.keys(geoids_count[layerName])
 	//console.log(layerName,positionsActive.length)
 	//	console.log(positionsActive)
@@ -140,33 +150,50 @@ function addLayers(layerData,layerName,color,offset){
 		'source': layerName,
 		'paint': {
 		//'circle-radius': 1,
-		'circle-color': color,
+		'circle-color': {
+			property: 'incomeRange',
+			stops: [
+			[min, "#fff"],
+			[max, "#fff"]
+			]
+		},
 		'circle-opacity': {
 			property: 'incomeRange',
 			stops: [
-			[5000, 0.1],
-			[100000, .2]
+			[min, 0.1],
+			[max, .2]
 			]
 		},
 		//'circle-translate':[parseInt(offset),0]
 			'circle-radius': {
 			property: 'incomeRange',
 			stops: [
-			[5000, 0],
-			[100000, 5]
+			[min, 0],
+			[max, 5]
 			]
 		}//,
 			 // map.setFilter(layer,["==","GEOID",positionsActive])
 		//'filter': ["in","GEOID"].concat(positionsActive)
 	}});
 	
+	var boldLayers = ["incomeRange","minIncome","maxIncome","id"]
 		 map.on('mousemove', layerName, (e) => {
 			 var feature = e.features[0]
 			 var string =""
 			 for(var i in feature.properties){
 			 	var layer = i
-				 var value = feature.properties[i]
-				  string+=layer+": "+value+"<br>"
+				 if(boldLayers.indexOf(layer)==-1){
+					 var mtfcc = mtfccsFileNames[i.split("_")[0]]
+					 var geoid = i.split("_")[1]
+					 var value = feature.properties[i]
+				  	string+=mtfcc+": "+value+"<br>"
+				 }else{
+					 var value = feature.properties[i]
+				 	string+="<strong>"+layer+": "+value+"<br></strong>"
+				 }
+				// console.log(layer,value)
+				 
+				 
 			 }
 			 d3.select("#info").html(string)
 		 })
