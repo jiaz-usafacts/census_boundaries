@@ -26,6 +26,8 @@ G4020: "#E5BD3F",
 X0072:'red', 
 X0001:"magenta", X0014:"green", X0005:"gold", X0029:"gold"
 		}
+		
+		var tenesee = [-86.7501,36.1708]
 
 var promises = []
 for(l in layers){
@@ -81,7 +83,7 @@ function showLocation(data) {
 	 map	= drawMap()
  map.on("load",function(){
 	 console.log("set center initial")
- 	setCenter(center)
+ 	setCenter(tenesee)
  })
  
 }
@@ -281,10 +283,10 @@ function drawMap(){
 		style:"mapbox://styles/jiaz-usafacts/cl65eu5qq000h15oajkphueac",// ,//newest
 		zoom: 10,
 		preserveDrawingBuffer: true,
-		minZoom:3.5,
+		minZoom:10,
 		maxZoom:15,// ,
 		 // maxBounds: maxBounds,
-		center: userCenter 
+		center:tenesee
      });	
 
 
@@ -309,7 +311,7 @@ function drawMap(){
 			 center = [e.lngLat.lng,e.lngLat.lat]
 			  map.flyTo({
 				  center: center,
-				  zoom:9
+				  zoom:10
 			  });
 			  
 			  if(clicked==true){
@@ -325,7 +327,7 @@ function drawMap(){
 	  			if(result!=null){
 	 				center = result.result.center
 					//console.log(center)
-					map.flyTo({center:center, zoom:9})
+					map.flyTo({center:center, zoom:10})
 					if(resulted==true){
 					  	 resulted=false
 					  	 map.on("moveend",function(){

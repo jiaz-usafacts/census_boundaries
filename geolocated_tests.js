@@ -14,22 +14,25 @@ var dp03
 var timeSeries
 		var layerColors = {
 //G4000: "#e62790",
-G5220: "#00347B",
-G5210: "#249edc",
+G5220: "#00906e",
+G5210: "#e62790",
 G5200: "#6929c4",
 G5410: "#20659d",
-G5400: "#cf77ad",
+G5400:  "#6929c4",
 //G4110: "#851c6a",
-G5420: "#a56eff",
+G5420: "#cf77ad",
 //G4210: "#006600",
-G4040: "#CC6A19",
-G4020: "#E5BD3F",//
+G4040: "#249edc",
+G4020: "#a56eff"//
 // X0072:'red',
 // X0001:"magenta", X0014:"green", X0005:"gold", X0029:"gold"
 		}
+		
+		//
+//
 	//
 //
-// csa - 00347b
+// csa: "00347b
 // cd - 249edc
 // senate upper - e62790
 // senate lower - 00906e
@@ -55,7 +58,6 @@ var promises = []
 		var keys = []
 for(l in layerColors){
 	var url = dataRoot+l+"_dp03_timeseries.json"
-	console.log(url)
 	var promise = d3.json(url)
 	keys.push(l)
 	promises.push(promise)
@@ -69,21 +71,7 @@ Promise.all(promises)
 	 	//console.log(i)
 		 timeSeries[keys[i]]=data[i]
 	 }
-	 console.log(timeSeries)
-	// dp03 = data[0]
-	//console.log(data)
-	 // for(var d in data){
- // 		// console.log(d)
- // 		// if(d<data.length-1){
- // 		 dataDict[layers[d]]=formatData(data[d])
- //
- // 		// }else{
- // 			//positionsData = formatPositions(data[d])
- // 		// }
- //
- // 	 }
-	 // console.log(dataDict)
-	//
+
 	 var api_key = "a247bcaf741b4b90bb90e90badd1682c"; // Api key obtained from your account page
 	 var url = `https://ipgeolocation.abstractapi.com/v1/?api_key=${api_key}`;
 	 
@@ -108,30 +96,13 @@ function showLocation(data) {
  // console.log(data);
   var parsedData = JSON.parse(data)
   var center = [parsedData.longitude,parsedData.latitude]
- console.log(center)  
  userCenter = center
 	 map	= drawMap()
  map.on("load",function(){
-	 console.log("set center initial")
  	setCenter(center)
  })
  
-}
-// function getLocation() {
-//
-//
-// 	$.getJSON('https://api.ipify.org?format=jsonp&callback=?', function(data) {
-// 		  console.log(data.ip);
-//
-// 	  	    jQuery.get("http://ipinfo.io/"+data.ip, function (response)
-// 	  	               {
-// 	  	                   var lats = response.loc.split(',')[0];
-// 	  	                   var lngs = response.loc.split(',')[1];
-// 	  	                 // console.log(lats,lngs)
-// 	  	               }, "jsonp");
-// 	});
-// }
-         
+}   
 
 function formatPositions(data){
 	//console.log(data)
@@ -429,39 +400,55 @@ function drawChangeSmallMultiple(data,key){
 
 
 function drawChart(data){
-	//d3.select("#chart svg").remove()
-	var h = 200
-	var w = 600
-	var p = 50
-	var keys = Object.keys(data[Object.keys(data)[0]])
-	//drawChangeSmallMultiple(data,"DP03_0001E")
-	//	drawChangeSmallMultiple(data,"DP03_0062E")
-		d3.selectAll(".chart").remove()
-	
-	var xScale = d3.scaleLinear().domain([2010,2020]).range([0,w-p*2])
-	
-	var columns  = Object.keys(dp03Columns)
-	for(var c in columns){
-		//console.log(c)
-		
-		var columnName = columns[c]
-		
-		
-		d3.select("#chart").append("div").attr("id","group_"+columnName)
-		.style("margin-top","20px")
-		.style("padding","10px")
-		.style("border","1px solid black")
-		.attr("class", "chart")
-		
-	//	.html(columnName)
-		
-		//drawSmallMultiple(data,columnName)
-		drawChangeSmallMultiple(data,columnName)
+	console.log(data)
+	for(var c in dp03Columns){
+		var columnName = dp03Columns[c]
+		var combinedColumnData =[]
+		for(var g in data){
+			var geo = g
+			var geoData = data[g]
+			var cData = geoData[c]
+			var data2020 = cData["2020"]
+			//console.log(data2020)
+			combinedColumnData.push([c,geo,data2020])
+		}
+		console.log(c,combinedColumnData)
+		drawCircle(c,combinedColumnData)
 	}
-	//var svg = d3.select("#chart").append("svg").attr("height",h).attr("width",w+20)
+}
+function drawCircle(column,data){
+	console.log(data)
+	var chartDiv = d3.select("#chart")
+	.append("div")
 	
+	if(column=="DP03_0001E"){
+		var yScale = d3.scaleSqrt().domain([0,1000000]).range([0,50])
+	}else if(column=="DP03_0062E"){
+		var yScale = d3.scaleSqrt().domain([0,200000]).range([0,50])
+	}else{
+		var yScale = d3.scaleSqrt().domain([0,20]).range([0,50])
+	}
+	
+	var h = 200
+	var bw = 50
+	var svg = chartDiv.append("svg").attr("width",500).attr("height",h)
+	//svg.append("rect").attr("x",20).attr("y",20).attr("width",20).attr("height",20)
+	
+	svg.selectAll(".bars")	
+	 .data(data)
+	 .enter()
+	 .append("rect")
+	 .attr("x",function(d,i){return i*bw})
+	 .attr("y",function(d,i){return h-yScale(d[2])})
+	 .attr("width",bw-2)
+	 .attr("height",function(d){console.log(d[2]); 
+		 return yScale(d[2])})
+		 .attr("fill",function(d){
+		 	return layerColors[d[1]]
+		 })
 	
 }
+
 
 function drawMap(){
 	
@@ -473,15 +460,15 @@ function drawMap(){
     map = new mapboxgl.Map({
 		container: 'map',
 		//style:"mapbox://styles/jiaz-usafacts/cl65eu5qq000h15oajkphueac?fresh=true",// ,//newest
-		style: "mapbox://styles/jiaz-usafacts/cl6e3gmlc000315npkvm6z7f7",
+		style: "mapbox://styles/jiaz-usafacts/cl6e3gmlc000315npkvm6z7f7?fresh=true",
 		zoom: 10,
 		preserveDrawingBuffer: true,
-		minZoom:3.5,
+		minZoom:10,
 		maxZoom:15,// ,
 		 // maxBounds: maxBounds,
         //pitch: 30, // pitch in degrees
         // bearing: -60, // bearing in degrees
-		center: userCenter 
+		center: [-86.670,36.140]
      });	
 
 
@@ -504,9 +491,9 @@ function drawMap(){
 		  clicked=true
 		  map.on('click', (e) => {
 			 center = [e.lngLat.lng,e.lngLat.lat]
-			  map.flyTo({
+			  map.setCenter({
 				  center: center,
-				  zoom:9
+				  zoom:10
 			  });
 			  
 			  if(clicked==true){
@@ -522,7 +509,7 @@ function drawMap(){
 	  			if(result!=null){
 	 				center = result.result.center
 					//console.log(center)
-					map.flyTo({center:center, zoom:9})
+					map.setCenter({center:center, zoom:10})
 					if(resulted==true){
 					  	 resulted=false
 					  	 map.on("moveend",function(){
