@@ -281,10 +281,10 @@ function drawMap(){
     map = new mapboxgl.Map({
 		container: 'map',
 		style:"mapbox://styles/jiaz-usafacts/cl65eu5qq000h15oajkphueac",// ,//newest
-		zoom: 10,
+		zoom: 9,
 		preserveDrawingBuffer: true,
-		minZoom:10,
-		maxZoom:15,// ,
+		minZoom:8,
+		maxZoom:11,// ,
 		 // maxBounds: maxBounds,
 		center:tenesee
      });	
