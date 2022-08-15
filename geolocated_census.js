@@ -36,23 +36,23 @@ for(l in layers){
 	var promise = d3.csv(url)
 	promises.push(promise)
 }
-//promises.push(d3.csv("races2b.csv"))
+promises.push(d3.csv("races2b.csv"))
 // console.log(promises)
-Promise.all([d3.json("dp03.json")])
+Promise.all([d3.json("dp03.json"),d3.csv("races2b.csv")])
  .then(function(data){
 	 dp03 = data[0]
 	console.log(dp03)
-	 // for(var d in data){
+	  for(var d in data){
  // 		// console.log(d)
- // 		// if(d<data.length-1){
- // 		 dataDict[layers[d]]=formatData(data[d])
+  		 if(d<data.length-1){
+  		 dataDict[layers[d]]=formatData(data[d])
+ 
+  		 }else{
+  			positionsData = formatPositions(data[d])
+  		 }
  //
- // 		// }else{
- // 			//positionsData = formatPositions(data[d])
- // 		// }
- //
- // 	 }
-	 // console.log(dataDict)
+  	 }
+	  console.log(positionsData)
 	//
 	 var api_key = "a247bcaf741b4b90bb90e90badd1682c"; // Api key obtained from your account page
 	 var url = `https://ipgeolocation.abstractapi.com/v1/?api_key=${api_key}`;
@@ -192,6 +192,7 @@ function setCenter(latLng){
 	  var lineData = []
 	  
 	  var chartData = {}
+			  var displayString = ""
 	  
 	  for(var f in features){		  
 		  var geoid = features[f].properties.GEOID
@@ -204,6 +205,20 @@ function setCenter(latLng){
 			  //console.log(censusData)
 			 // var pop = dataDict[features[f].layer.id][geoid]["pop"]
 			//  var geoName = dataDict[features[f].layer.id][geoid]["geoName"].split(",")[0]
+			  
+			  var positions = positionsData[mtfccId][geoid]
+			  for(var p in positions){
+			  	var position = positions[p]
+				  var level = position.level
+				  var label = position.name
+				  var officeHolder = position.officeholderName
+				  var salary = position.salary
+				  var years = position.totalYearsInOffice
+				  displayString +="level: "+level+"<br>name: "+label
+				  +"<br>office holder: "+officeHolder
+				  +"<br>salary: "+salary
+				  +"<br>years in office: "+years+"<br>"				  
+			  }
 			  
 			  displayString+="<br><span class=\"popupNumbers\">"+"</span><br>"//+positionString
 
@@ -280,13 +295,13 @@ function drawMap(){
     mapboxgl.accessToken = "pk.eyJ1Ijoiamlhei11c2FmYWN0cyIsImEiOiJjbDNrOXUxNmoxamNmM2ltcmdhemQwNWJiIn0.QVFg3eeO5XBtNc5WRDHEYg"
     map = new mapboxgl.Map({
 		container: 'map',
-		style:"mapbox://styles/jiaz-usafacts/cl65eu5qq000h15oajkphueac",// ,//newest
-		zoom: 9,
+		style:"mapbox://styles/jiaz-usafacts/cl65eu5qq000h15oajkphueac?fresh=true",// ,//newest
+		zoom: 12,
 		preserveDrawingBuffer: true,
 		minZoom:8,
-		maxZoom:11,// ,
+		maxZoom:12,// ,
 		 // maxBounds: maxBounds,
-		center:tenesee
+		center:[-86.468,32.470]
      });	
 
 
