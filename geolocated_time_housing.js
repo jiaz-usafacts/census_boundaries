@@ -361,6 +361,59 @@ function  drawSmallMultiple(data,key){
 	}
 }
 
+function drawHousingChangeOnTop(data,housingGeo,svgId,color){
+	var xScale = d3.scaleLinear().domain([2010,2020]).range([0,w-p*2])
+	
+	var popKey = 'housing'
+	var yScale = popKey === 'housing' ? d3.scaleLinear().domain([30,-30]).range([h-p*2,0]) : d3.scaleLinear().domain([30,-30]).range([h-p*2,0])
+	
+		var xAxis = d3.axisBottom().scale(xScale).ticks(2)
+		var yAxis = d3.axisLeft().scale(yScale).ticks(4)
+		var chartData = data[housingGeo][popKey]
+	
+
+	var dateParse = d3.timeParse("%Y-%m");
+
+	var dates = Object.keys(chartData);
+	xScale = d3.scaleLinear().domain([dateParse("2010-1"),dateParse("2020-1"),]).range([0,w-p*4]);
+	
+	var svg = d3.select(svgId)
+				// svg.append("g").call(xAxis)
+	// 		.attr("transform","translate("+p+","+(h-p)+")")
+	//
+	// 			svg.append("g").call(yAxis)
+	// 		.attr("transform","translate("+p+","+p+")")
+	//
+	//
+	
+	//d3.select("#"+popKey+"_"+d)
+	svg.append("path")
+	.datum(dates)
+	.attr("stroke", color)
+	.attr("stroke-width",2)
+	.attr("opacity",.5)
+	.attr("fill", "none")
+			.attr("transform","translate("+p+","+p+")")
+	
+	.attr("d",d3.line()
+		.x(function(d){			
+			return popKey === 'housing' ? xScale(dateParse(d)) : xScale(d)
+		})
+		.y(function(d, i){
+			var previousYear = 0
+			var previousValue = parseInt(chartData[dates[previousYear]])
+			var currentValue = parseInt(chartData[d])
+			var percentChange = (previousValue-currentValue)/currentValue*100
+			if(isNaN(percentChange)==true){
+				//console.log(previousYear,previousValue,currentValue,percentChange,yScale(currentValue))
+				return yScale(0)
+			}else{
+				return yScale(percentChange)
+			}
+	
+		})
+	)
+}
 
 function drawChangeSmallMultiple(data,key){
 	d3.select("#group_"+key).append("div").html("% change "+dp03Columns[key])
@@ -375,7 +428,7 @@ function drawChangeSmallMultiple(data,key){
 //	var h = 100
 //	var p = 20
 	var xScale = d3.scaleLinear().domain([2010,2020]).range([0,w-p*2])
-	var yScale = popKey === 'housing' ? d3.scaleLinear().domain([3,-3]).range([h-p*2,0]) : d3.scaleLinear().domain([30,-30]).range([h-p*2,0])
+	var yScale = popKey === 'housing' ? d3.scaleLinear().domain([30,-30]).range([h-p*2,0]) : d3.scaleLinear().domain([30,-30]).range([h-p*2,0])
 	
 		var xAxis = d3.axisBottom().scale(xScale).ticks(2)
 		var yAxis = d3.axisLeft().scale(yScale).ticks(4)
@@ -425,7 +478,7 @@ function drawChangeSmallMultiple(data,key){
 			return popKey === 'housing' ? xScale(dateParse(d)) : xScale(d)
 		})
 		.y(function(d, i){
-			var previousYear = i-1
+			var previousYear = 0
 			var previousValue = parseInt(chartData[dates[previousYear]])
 			var currentValue = parseInt(chartData[d])
 			var percentChange = (previousValue-currentValue)/currentValue*100
@@ -446,7 +499,7 @@ function drawHousingOnTop(data,housingGeo,svgId,color){
 	var chartData = data[housingGeo]["housing"]
 	var dates = Object.keys(chartData)
 	var dateParse = d3.timeParse("%Y-%m");
-	console.log(dates)
+//	console.log(dates)
 	//var w = 200
 //	var h = 100
 //	var p = 20
@@ -529,21 +582,30 @@ function drawChart(data){
 	//	.html(columnName)
 		
 		drawSmallMultiple(data,columnName)
-	//	drawChangeSmallMultiple(data,columnName)
-		var color =  "#e62790"
-		drawHousingOnTop(data,"G4000","#DP03_0062E_G5200_value",color)
-		drawHousingOnTop(data,"G4000","#DP03_0062E_G5210_value",color)
-		drawHousingOnTop(data,"G4000","#DP03_0062E_G5220_value",color)
-		drawHousingOnTop(data,"G4000","#DP03_0062E_G4020_value",color)
-		drawHousingOnTop(data,"G4000","#DP03_0062E_G5420_value",color)
+		drawChangeSmallMultiple(data,columnName)
+		var color =  "#e62790"		//
+		// drawHousingOnTop(data,"G4000","#DP03_0062E_G5200_value",color)
+		// drawHousingOnTop(data,"G4000","#DP03_0062E_G5210_value",color)
+		// drawHousingOnTop(data,"G4000","#DP03_0062E_G5220_value",color)
+		// drawHousingOnTop(data,"G4000","#DP03_0062E_G4020_value",color)
+		// drawHousingOnTop(data,"G4000","#DP03_0062E_G5420_value",color)
 		var color2 = 'green'
-		drawHousingOnTop(data,"G3110","#DP03_0062E_G5200_value",color2)
-		drawHousingOnTop(data,"G3110","#DP03_0062E_G5210_value",color2)
-		drawHousingOnTop(data,"G3110","#DP03_0062E_G5220_value",color2)
-		drawHousingOnTop(data,"G3110","#DP03_0062E_G4020_value",color2)
-		drawHousingOnTop(data,"G3110","#DP03_0062E_G5420_value",color2)
-		
-		
+		// drawHousingOnTop(data,"G3110","#DP03_0062E_G5200_value",color2)
+// 		drawHousingOnTop(data,"G3110","#DP03_0062E_G5210_value",color2)
+// 		drawHousingOnTop(data,"G3110","#DP03_0062E_G5220_value",color2)
+// 		drawHousingOnTop(data,"G3110","#DP03_0062E_G4020_value",color2)
+// 		drawHousingOnTop(data,"G3110","#DP03_0062E_G5420_value",color2)
+//
+		var chartsToAddTo = ["#DP03_0062E_G5420","#DP03_0062E_G4020","#DP03_0062E_G5220","#DP03_0062E_G5210","#DP03_0062E_G5200"]
+		for(var c in chartsToAddTo){
+			var chartId = chartsToAddTo[c]
+			drawHousingOnTop(data,"G4000",chartId+"_value",color)
+			drawHousingOnTop(data,"G3110",chartId+"_value",color2)
+			
+			drawHousingChangeOnTop(data,"G4000",chartId,color)
+			drawHousingChangeOnTop(data,"G3110",chartId,color2)
+			
+		}
 	}
 	//var svg = d3.select("#chart").append("svg").attr("height",h).attr("width",w+20)
 	
