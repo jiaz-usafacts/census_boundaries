@@ -303,7 +303,7 @@ function drawMap(){
 		 // maxBounds: maxBounds,
 		center:[-86.468,32.470]
      });	
-
+	
 
 	 map.addControl(new mapboxgl.NavigationControl(),'bottom-right');
 
@@ -320,6 +320,10 @@ function drawMap(){
 	  // console.log(map.getStyle().layers)
 // 		  console.log(userCenter)
 // 	  	setCenter(userCenter)
+	 
+	 	 map.on("move",function(){
+	 	 	console.log(map.getZoom())
+	 	 })
 	   
 		  clicked=true
 		  map.on('click', (e) => {
