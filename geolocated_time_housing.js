@@ -365,7 +365,7 @@ function drawHousingChangeOnTop(data,housingGeo,svgId,color,svg){
 	var xScale = d3.scaleLinear().domain([2010,2020]).range([0,w-p*2])
 	
 	var popKey = 'housing'
-	var yScale = popKey === 'housing' ? d3.scaleLinear().domain([30,-30]).range([h-p*2,0]) : d3.scaleLinear().domain([30,-30]).range([h-p*2,0])
+	var yScale = popKey === 'housing' ? d3.scaleLinear().domain([50,-50]).range([h-p*2,0]) : d3.scaleLinear().domain([50,-50]).range([h-p*2,0])
 	
 		var xAxis = d3.axisBottom().scale(xScale).ticks(2)
 		var yAxis = d3.axisLeft().scale(yScale).ticks(4)
@@ -428,7 +428,7 @@ function drawChangeSmallMultiple(data,key,svg){
 //	var h = 100
 //	var p = 20
 	var xScale = d3.scaleLinear().domain([2010,2020]).range([0,w-p*2])
-	var yScale = popKey === 'housing' ? d3.scaleLinear().domain([30,-30]).range([h-p*2,0]) : d3.scaleLinear().domain([30,-30]).range([h-p*2,0])
+	var yScale = popKey === 'housing' ? d3.scaleLinear().domain([50,-50]).range([h-p*2,0]) : d3.scaleLinear().domain([50,-50]).range([h-p*2,0])
 	
 		var xAxis = d3.axisBottom().scale(xScale).ticks(2)
 		var yAxis = d3.axisLeft().scale(yScale).ticks(4)
