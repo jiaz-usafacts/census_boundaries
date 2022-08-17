@@ -189,7 +189,7 @@ var dp03Columns = {
 // DP03_0052PE: "Less than $10,000",
 // DP03_0061PE: "$200,000 or more",
 //	DP03_0028PE:"service occupations",
-	"housing": "housing prices",
+	//"housing": "housing prices",
 DP03_0062E: "Median household income"
 }
 		
@@ -254,7 +254,7 @@ function setCenter(latLng){
 				  //map.setPaintProperty(layer,"line-offset",parseInt(f)*20)
 				 // map.setPaintProperty(layer,"line-translate",[parseInt(f),parseInt(f)])
 				  // map.setPaintProperty(layer, 'line-color', layerColors[mtfccId]);			  //
-   				  map.setPaintProperty(layer, 'line-width', 6-parseInt(f));			  //
+   				  map.setPaintProperty(layer, 'line-width', 10-parseInt(f));			  //
   // 				  map.setPaintProperty(layer, 'line-opacity', .5);			  //
   //  // map.setPaintProperty(layer, 'fill-outline-color', layerColors[mtfccId]);
 				  // map.setPaintProperty(layer, 'fill-opacity', .2);
@@ -268,8 +268,8 @@ function setCenter(latLng){
 }
 
 var p = 40
-var w = 300
-var h = 200
+var w = 600
+var h = 800
 function  drawSmallMultiple(data,key){
 	if (key === 'housing') console.log(data)
 	d3.select("#group_"+key).append("div").html(dp03Columns[key])//+" "+mtfccsFileNames[d])
@@ -330,8 +330,8 @@ function  drawSmallMultiple(data,key){
 				svg.append("g").call(yAxis)
 			.attr("transform","translate("+p*3+","+p+")")
 		
-	d3.select("#"+popKey+"_"+d+"_value")
-	.append("path")
+	//d3.select("#"+popKey+"_"+d+"_value")
+	svg.append("path")
 	.datum(dates)
   	.attr("stroke", color)
 	.attr("stroke-width",2)
@@ -361,7 +361,7 @@ function  drawSmallMultiple(data,key){
 	}
 }
 
-function drawHousingChangeOnTop(data,housingGeo,svgId,color){
+function drawHousingChangeOnTop(data,housingGeo,svgId,color,svg){
 	var xScale = d3.scaleLinear().domain([2010,2020]).range([0,w-p*2])
 	
 	var popKey = 'housing'
@@ -377,7 +377,7 @@ function drawHousingChangeOnTop(data,housingGeo,svgId,color){
 	var dates = Object.keys(chartData);
 	xScale = d3.scaleLinear().domain([dateParse("2010-1"),dateParse("2020-1"),]).range([0,w-p*4]);
 	
-	var svg = d3.select(svgId)
+//	var svg = d3.select(svgId)
 				// svg.append("g").call(xAxis)
 	// 		.attr("transform","translate("+p+","+(h-p)+")")
 	//
@@ -415,7 +415,7 @@ function drawHousingChangeOnTop(data,housingGeo,svgId,color){
 	)
 }
 
-function drawChangeSmallMultiple(data,key){
+function drawChangeSmallMultiple(data,key,svg){
 	d3.select("#group_"+key).append("div").html("% change "+dp03Columns[key])
 	.style("font-size","24px")
 	.style("padding-top","10px")
@@ -434,13 +434,14 @@ function drawChangeSmallMultiple(data,key){
 		var yAxis = d3.axisLeft().scale(yScale).ticks(4)
 			
 	for(var d in data){
+		var mtfccId = d
 		var color = layerColors[d]
 		if (Object.keys(data[d]).indexOf(popKey) < 0) continue;
 		var chartData = data[d][popKey]
-		var chartDiv = d3.select("#group_"+key).append("div").style("display","inline-block").style("width",w+"px")
-		.attr("class", "chart")
+	//	var chartDiv = d3.select("#group_"+key).append("div").style("display","inline-block").style("width",w+"px")
+	//	.attr("class", "chart")
 		
-		chartDiv.append("div").html(mtfccsFileNames[d])
+		//chartDiv.append("div").html(mtfccsFileNames[d])
 
 		var dateParse = d3.timeParse("%Y-%m");
 
@@ -454,8 +455,8 @@ function drawChangeSmallMultiple(data,key){
 			xAxis = d3.axisBottom().scale(xScale).ticks(2);
 		}
 		
-		var svg = chartDiv.append("svg").attr("height",h).attr("width",w)
-		.attr("id", popKey+"_"+d)
+		// var svg = chartDiv.append("svg").attr("height",h).attr("width",w)
+// 		.attr("id", popKey+"_"+d)
 				
 				svg.append("g").call(xAxis)
 			.attr("transform","translate("+p+","+(h-p)+")")
@@ -464,8 +465,30 @@ function drawChangeSmallMultiple(data,key){
 			.attr("transform","translate("+p+","+p+")")
 		
 		
-	d3.select("#"+popKey+"_"+d)
-	.append("path")
+	//d3.select("#"+popKey+"_"+d)
+		
+		svg.append("text").text(function(){
+			var previousValue = parseInt(chartData[dates[0]])
+			var currentValue = parseInt(chartData[2020])
+			var percentChange = Math.round((currentValue-previousValue)/currentValue*100)
+				return mtfccsFileNames[mtfccId]
+		}
+		)
+		.attr("y",function(){
+			var previousValue = parseInt(chartData[dates[0]])
+			var currentValue = parseInt(chartData[2020])
+			var percentChange = (previousValue-currentValue)/currentValue*100
+			console.log(yScale(percentChange))
+				return yScale(percentChange)
+		})
+		.attr("x",function(){
+			return xScale(2020)
+			
+		})
+		.attr("transform","translate("+p+","+p+")")
+		
+		
+	svg.append("path")
 	.datum(dates)
   	.attr("stroke", color)
 	.attr("stroke-width",2)
@@ -525,16 +548,16 @@ function drawHousingOnTop(data,housingGeo,svgId,color){
 			 svg.append("g").call(yAxis)
 	 	.attr("transform","translate("+(w-p)+","+p+")")
 	var popKey = 'housing'
-svg//d3.select("#"+popKey+"_"+d+"_value")
-.append("path")
-.datum(dates)
-.attr("stroke",color)
-.attr("stroke-width",2)
-.attr("opacity",.5)
-.attr("fill", "none")
-		.attr("transform","translate("+p*3+","+p+")")
+	svg//d3.select("#"+popKey+"_"+d+"_value")
+	.append("path")
+	.datum(dates)
+	.attr("stroke",color)
+	.attr("stroke-width",2)
+	.attr("opacity",.5)
+	.attr("fill", "none")
+			.attr("transform","translate("+p*3+","+p+")")
 	
-.attr("d",d3.line()
+	.attr("d",d3.line()
 	.x(function(d){			
 		return popKey === 'housing' ? xScale(dateParse(d)) : xScale(d)
 	})
@@ -572,17 +595,17 @@ function drawChart(data){
 		
 		var columnName = columns[c]
 		
-		
-		d3.select("#chart").append("div").attr("id","group_"+columnName)
+		var chartDiv = d3.select("#chart").append("div").attr("id","group_"+columnName)
 		.style("margin-top","20px")
 		.style("padding","10px")
 		.style("border","1px solid black")
 		.attr("class", "chart")
 		
+		var svg = chartDiv.append("svg").attr("width",w).attr("height",h)
 	//	.html(columnName)
 		
-		drawSmallMultiple(data,columnName)
-		drawChangeSmallMultiple(data,columnName)
+	//	drawSmallMultiple(data,columnName)
+		drawChangeSmallMultiple(data,columnName,svg)
 		var color =  "#e62790"		//
 		// drawHousingOnTop(data,"G4000","#DP03_0062E_G5200_value",color)
 		// drawHousingOnTop(data,"G4000","#DP03_0062E_G5210_value",color)
@@ -598,12 +621,12 @@ function drawChart(data){
 //
 		var chartsToAddTo = ["#DP03_0062E_G5420","#DP03_0062E_G4020","#DP03_0062E_G5220","#DP03_0062E_G5210","#DP03_0062E_G5200"]
 		for(var c in chartsToAddTo){
-			var chartId = chartsToAddTo[c]
-			drawHousingOnTop(data,"G4000",chartId+"_value",color)
-			drawHousingOnTop(data,"G3110",chartId+"_value",color2)
+			var chartId = chartsToAddTo[c]			//
+			// drawHousingOnTop(data,"G4000",chartId+"_value",color)
+			// drawHousingOnTop(data,"G3110",chartId+"_value",color2)
 			
-			drawHousingChangeOnTop(data,"G4000",chartId,color)
-			drawHousingChangeOnTop(data,"G3110",chartId,color2)
+			drawHousingChangeOnTop(data,"G4000",chartId,color,svg)
+			drawHousingChangeOnTop(data,"G3110",chartId,color2,svg)
 			
 		}
 	}
